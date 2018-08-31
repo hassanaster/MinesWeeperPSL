@@ -1,8 +1,9 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Class Minesweeper has 8 methods + 1 main method. It is the game Minesweeper in console.
+ * @Author: Miriam Hasana Arango Vasquez
+ * Version01 - 31/08/2018
  */
+
 package minesweeper;
 
 import java.util.Scanner;
@@ -17,36 +18,54 @@ public class Minesweeper {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //object Scanner to take the results for each number we need
+        //object Scanner to take the results for each number and string we need
         Scanner enter = new Scanner(System.in);
         Scanner enterString = new Scanner(System.in);
         Scanner enterStringUno= new Scanner(System.in);
         Scanner enterStringDos= new Scanner(System.in);
+        boolean error;
         //height contain how many rows the user wants for the grid
-        int height;
+        int height = 0;
         //weight contain how many colums the user wants for the grid
-        int weight; 
+        int weight = 0; 
         //mines contain the number of mines the user wants in the grid
-        int mines;
+        int mines = 0;
         //If user want to keep playing another round.
         boolean c = true;
         //When the game finish (User win or lost)
         boolean finish;
+        //The row of a square.
+        int row = 0;
+        //The column of a square.
+        int column = 0;
         while (c){
+            error = true;
             finish = true;
-            //We ask the the INITIAL information
-            System.out.print("Welcome to Minesweeper \n");
-            System.out.print("Enter the height of the grid:  \n");
-            height = enter.nextInt();
-            System.out.print("Enter the weight of the grid:  \n");
-            weight = enter.nextInt();
-            System.out.print("Enter the number of mines you want in the grid:  \n");
-            mines = enter.nextInt();
-            
+            do {
+                try {
+                    error = true;
+                    //We ask the the INITIAL information
+                    System.out.print("Welcome to Minesweeper \n");
+                    System.out.print("Enter the height of the grid:  \n");
+                    height = enter.nextInt();
+                    System.out.print("Enter the weight of the grid:  \n");
+                    weight = enter.nextInt();
+                    System.out.print("Enter the number of mines you want in the grid:  \n");
+                    mines = enter.nextInt();
+                    
+                } catch (Exception e) {
+
+                    System.out.println("Not valid type of character, Remember you need to write numbers. ");
+                    error = false;
+                    enter.nextLine();
+                    finish = false;
+                }
+
+            } while (false);
             //This "if" is to validate the number of mines don't exceed the 60% of the grid size, because it will be really full, no change to choose a nice position
             //Validate too the grid has minimum 2 squares or empty spaces
             if(((mines)<=(height*weight*0.6))&&(height*weight)>1) {
-                //We start the rounds
+               
                 //Deploy the matrix
                 String grid [][];  
                 String gridPlay[][]= new String [height][weight];
@@ -54,21 +73,38 @@ public class Minesweeper {
                 pointGrid(grid,height,weight);
                 pointGrid(gridPlay,height,weight);
                 writeGrid(gridPlay,height,weight);
-                System.out.print(" \n\n");
-                writeGrid(grid,height,weight);
+                //System.out.print(" \n\n");
+                //writeGrid(grid,height,weight);
                 System.out.print(" \n\n");
                 String action;
                 
-                //This while control each position and action the user chooses
+                //We start the rounds
                 while(finish){
-                    System.out.print("We need the number of the row that you wanna choose: \n");
-                    int row = enter.nextInt();
-                    System.out.print("We need the number of the column that you wanna choose: \n");
-                    int column = enter.nextInt();
+                    //This part of the code ask to the users the position
+                    error = true;
+                    do {
+                        try {
+                            error = true;
+                            //We ask the the INITIAL information
+                            System.out.print("We need the number of the row that you wanna choose: \n");
+                            row = enter.nextInt();
+                            System.out.print("We need the number of the column that you wanna choose: \n");
+                            column = enter.nextInt();
+                        } catch (Exception e) {
+                            System.out.println("Not valid type of character, Remember you need to write numbers in those fields, for that the game close. ");
+                            error = false;
+                            enter.nextLine();
+                            System.exit(0);
+                        }
+                    } while (false);
+                    
                     System.out.print("Enter U if you wanna see what it is in the position or P if you think it is a mine:  \n");
                     action = enterString.nextLine();
+                    //Validate if the number of the column and row is right for the height and weight
                     if (row<height&&column<weight){
+                        //Validate if the square chose for the user isn't mark already
                         if(isNotMark(gridPlay,row,column)){
+                            //Start to Validate the actions U and P or invalid
                             if (action.equals("U")) {
                                 //Here the code look if in this position when user open it is a mine or not, the first case open a mine
                                 if (openMine(grid, row, column)) {
@@ -94,6 +130,7 @@ public class Minesweeper {
                                     gridPlay = openSquare(gridPlay, grid, row, column, height, weight);
                                     writeGrid(gridPlay, height, weight);
                                     System.out.print(" \n\n");
+                                    //Verified if the grid is complete the user win
                                     if (completeGrid(grid, gridPlay, height, weight)) {
                                         System.out.print("###YOU WIN###");
                                         System.out.print("Do you want to keep playing? Please, Mark Y if you wanna Keep or N if you don't: \n");
@@ -117,6 +154,7 @@ public class Minesweeper {
                                     gridPlay[row][column] = "P";
                                     writeGrid(gridPlay, height, weight);
                                     System.out.print(" \n\n");
+                                    //Verified if the grid is complete, if it is complete the user won
                                     if (completeGrid(grid, gridPlay, height, weight)) {
                                         System.out.print("###YOU WIN###");
                                         System.out.print("Do you want to keep playing? Please, Mark Y if you wanna Keep or N if you don't: \n");
@@ -168,7 +206,7 @@ public class Minesweeper {
         return grid;
     }
     
-    //Method that fills with . the grid in empty position
+    //Method that fills with . the grid in empty position, receive the main grid, the height and weight
     private static void pointGrid(String matriz[][], int h, int w){
         for (int i=0; i<h; i++){
            
@@ -307,7 +345,7 @@ public class Minesweeper {
         } 
     } 
     
-    //Result grid, join both grids, the play grid with the mine grid
+    //Result grid, join both grids, the play grid with the mine grid when the game is finished
     private static String [][] resultGrid(String matrizMine [][], String matrizPlay [][],  int h, int w){ 
         for (int i=0; i<h; i++){
              for (int j=0; j<w; j++){
@@ -324,20 +362,16 @@ public class Minesweeper {
        for (int i=0; i<h; i++){
              for (int j=0; j<w; j++){
                 if((matrizPlay[i][j].equals("."))&&(matriz[i][j].equals("*"))){
-                    System.out.print("Es punto en la matriz Play y es * en la original - si se puede\n");
                     return false;
                 } 
                 if((matrizPlay[i][j].equals("."))&&(matriz[i][j].equals("."))){
-                     System.out.print("Es punto en las dos marices por lo tanto - SI SE PUEDE \n");
                     return false;
                 }
                 if((matrizPlay[i][j].equals("P"))&&(matriz[i][j].equals("."))){
-                    System.out.print("ESTA MARCADA COMO P, PERO NO ES MINA - SI SE PUEDE \n");
                     return false;
                 }
             }
         }
-        System.out.print("NO SE PUEDE YA GANO \n");
         return true;
     } 
     
