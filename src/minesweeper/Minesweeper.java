@@ -20,18 +20,20 @@ public class Minesweeper {
         //object Scanner to take the results for each number we need
         Scanner enter = new Scanner(System.in);
         Scanner enterString = new Scanner(System.in);
+        Scanner enterStringUno= new Scanner(System.in);
         //height contain how many rows the user wants for the grid
         int height;
-        //height contain how many colums the user wants for the grid
+        //weight contain how many colums the user wants for the grid
         int weight; 
         //mines contain the number of mines the user wants in the grid
         int mines;
-        //If user want to keep playing another round or quit the game.
+        //If user want to keep playing another round.
         boolean c = true;
         //When the game finish (User win or lost)
-        boolean finish = true;
+        boolean finish;
         while (c){
-            //We ask the enter dates
+            finish = true;
+            //We ask the the INITIAL information
             System.out.print("Welcome to Minesweeper \n");
             System.out.print("Enter the height of the grid:  \n");
             height = enter.nextInt();
@@ -64,24 +66,41 @@ public class Minesweeper {
                     System.out.print("Enter U if you wanna see what it is in the position or P if you think it is a mine:  \n");
                     String action = enterString.nextLine();
                     if (row<height&&column<weight){ 
-                        //System.out.print(action+"  \n");
                         if(action.equals("U")){
+                            //Here the code look if in this position when user open it is a mine or not, the first case open a mine
                             if(openMine(grid,row,column)){
-                                finish = false;
                                 System.out.print("You opened a mine, look how the complete grid is:  \n\n");
                                 resultGrid(grid, gridPlay, height, weight);
                                 writeGrid(gridPlay, height, weight);
                                 System.out.print(" \n\n");
-                                //PREGUNTAR SI QUIERE SEGUIR JUGANDO OTRO ROUND O NO?
+                                System.out.print("Do you want to keep playing? Please, Mark Y if you wanna Keep or N if you don't: \n");
+                                action = enterStringUno.nextLine();
+                                if(action.equals("N")) {
+                                    System.exit(0);
+                                }else {
+                                    if(action.equals("Y")) {
+                                       finish = false;
+                                       System.out.print(" \n\n");
+                                    }else {
+                                        System.out.print(" You didn't mark a right answer, remember they are CAPITAL Letters - Y or N- for that the game is close. \n\n"); 
+                                        System.exit(0);
+                                    } 
+                                } 
                             }else{
-                                
-                                System.out.print("Entro en la que no es mina.  \n");
+                                System.out.print(action+" ENTRO CUANDO NO ES UNA MINA FILA" + row+" columna"+column+ " \n");
+                                gridPlay = openSquare(gridPlay, grid, row, column, height, weight);
+                                System.out.print(" \n\n");
+                                writeGrid(gridPlay, height, weight);
                             } 
                         }else{
+                            if(action.equals("P")) { 
                             gridPlay[row][column]="P";
                             writeGrid(gridPlay, height, weight);
                             System.out.print(" \n\n");
                             //Verificar si el juego está completo o no, si está completo desplegar matriz y cambiar finish a false, sino seguir.
+                            }else {
+                               System.out.print(" You didn't mark a right answer, remember they are CAPITAL Letters - U or P- \n\n"); 
+                            } 
                         } 
                     }else{
                         System.out.print("Remember the numbers of row and column should be less than height and weight respectively. Please enter the information again.  \n\n");
@@ -135,14 +154,119 @@ public class Minesweeper {
     }
     
     //Method when user choose U and it isn't a mine -- FALTA
-    private static void openSquare(String matriz[][], int r, int c){
-        for (int i=0; i<r; i++){
-           
-           for (int j=0; j<c; j++){
-                System.out.print(matriz[i][j]+" ");
-            }
-            System.out.print(" \n");
+    private static String [][] openSquare(String matrizPlay[][], String matriz[][], int r, int c, int h, int w){
+        int mina = 0;
+     
+        //Verified if the square is up it has a mine
+        if (r-1 >= 0){  
+            if(openMine(matriz,r-1,c)){
+                mina++;
+                 System.out.print(mina+" \n");
+            } 
         }
+        
+        //Verified if the square is at right it has a mine
+        if (c+1 < w){
+            if(openMine(matriz,r,c+1)){
+                mina++;
+                System.out.print(mina+" \n");
+            } 
+        }
+        
+        //Verified if the square is down it has a mine
+        if (r+1 < h){
+            if(openMine(matriz,r+1,c)){
+                mina++;
+                System.out.print(mina+" \n");
+            } 
+        }
+        
+        //Verified if the square is at left it has a mine
+        if (c-1 >= 0){
+            if(openMine(matriz,r,c-1)){
+                mina++;
+                System.out.print(mina+" \n");
+            } 
+        }
+        
+        //Verified if the square is up-right it has a mine
+        if (r-1 >= 0 && c+1 < w){
+            if(openMine(matriz,r-1,c+1)){
+                mina++;
+                System.out.print(mina+" \n");
+            } 
+        }
+        
+        //Verified if the square is down-right it has a mine
+        if (r+1 < h && c+1 < w){
+            if(openMine(matriz,r+1,c+1)){
+                mina++;
+                System.out.print(mina+" \n");
+            } 
+        }
+        
+        //Verified if the square is up-left it has a mine
+        if (r-1 >= 0 && c-1 >= 0){
+            if(openMine(matriz,r-1,c-1)){
+                mina++;
+                System.out.print(mina+" \n");
+            } 
+        }
+        
+        //Verified if the square is down-left it has a mine
+        if (r+1 < h && c-1 >= 0){
+            if(openMine(matriz,r+1,c-1)){
+                mina++;
+                System.out.print(mina+" \n");
+            } 
+        }
+        
+        if(mina!=0){
+            matrizPlay[r][c]=String.valueOf(mina);
+            System.out.print("Entro para salir porque tiene :"+mina+" minas \n");
+        }else{
+            matrizPlay[r][c]="-";
+            //OutofBounds
+            if (r - 1 >= 0) {
+               matrizPlay = openSquare(matrizPlay, matriz, r-1, c, h, w);
+            }
+
+            //OutofBounds
+            if (c + 1 < w) {
+                matrizPlay = openSquare(matrizPlay, matriz,r, c+1, h, w);
+            }
+
+            //OutofBounds
+            if (r + 1 < h) {
+                matrizPlay = openSquare(matrizPlay, matriz, r+1, c, h, w);
+            }
+
+            //OutofBounds
+            if (c - 1 >= 0) {
+                matrizPlay = openSquare(matrizPlay, matriz, r, c-1, h, w);
+            }
+
+            //OutofBounds
+            if (r - 1 >= 0 && c + 1 < w) {
+                matrizPlay = openSquare(matrizPlay, matriz, r-1, c+1, h, w);
+            }
+
+            //OutofBounds
+            if (r + 1 < h && c + 1 < w) {
+               matrizPlay = openSquare(matrizPlay, matriz, r+1, c+1, h, w);
+            }
+
+            //OutofBounds
+            if (r - 1 >= 0 && c - 1 >= 0) {
+                matrizPlay = openSquare(matrizPlay,  matriz, r-1, c-1, h, w);
+            }
+
+            //OutofBounds
+            if (r + 1 < h && c - 1 >= 0) {
+                matrizPlay = openSquare(matrizPlay, matriz, r+1, c-1, h, w);
+            }
+        }
+       return matrizPlay;
     }
     
     //This method tells if the square that user opened is a mine or no
