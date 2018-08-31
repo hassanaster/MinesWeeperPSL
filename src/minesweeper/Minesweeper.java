@@ -21,6 +21,7 @@ public class Minesweeper {
         Scanner enter = new Scanner(System.in);
         Scanner enterString = new Scanner(System.in);
         Scanner enterStringUno= new Scanner(System.in);
+        Scanner enterStringDos= new Scanner(System.in);
         //height contain how many rows the user wants for the grid
         int height;
         //weight contain how many colums the user wants for the grid
@@ -56,6 +57,7 @@ public class Minesweeper {
                 System.out.print(" \n\n");
                 writeGrid(grid,height,weight);
                 System.out.print(" \n\n");
+                String action;
                 
                 //This while control each position and action the user chooses
                 while(finish){
@@ -64,50 +66,86 @@ public class Minesweeper {
                     System.out.print("We need the number of the column that you wanna choose: \n");
                     int column = enter.nextInt();
                     System.out.print("Enter U if you wanna see what it is in the position or P if you think it is a mine:  \n");
-                    String action = enterString.nextLine();
-                    if (row<height&&column<weight){ 
-                        if(action.equals("U")){
-                            //Here the code look if in this position when user open it is a mine or not, the first case open a mine
-                            if(openMine(grid,row,column)){
-                                System.out.print("You opened a mine, look how the complete grid is:  \n\n");
-                                resultGrid(grid, gridPlay, height, weight);
-                                writeGrid(gridPlay, height, weight);
-                                System.out.print(" \n\n");
-                                System.out.print("Do you want to keep playing? Please, Mark Y if you wanna Keep or N if you don't: \n");
-                                action = enterStringUno.nextLine();
-                                if(action.equals("N")) {
-                                    System.exit(0);
-                                }else {
-                                    if(action.equals("Y")) {
-                                       finish = false;
-                                       System.out.print(" \n\n");
-                                    }else {
-                                        System.out.print(" You didn't mark a right answer, remember they are CAPITAL Letters - Y or N- for that the game is close. \n\n"); 
+                    action = enterString.nextLine();
+                    if (row<height&&column<weight){
+                        if(isNotMark(gridPlay,row,column)){
+                            if (action.equals("U")) {
+                                //Here the code look if in this position when user open it is a mine or not, the first case open a mine
+                                if (openMine(grid, row, column)) {
+                                    System.out.print("###GAME OVER### - You opened a mine, look how the complete grid is:  \n\n");
+                                    resultGrid(grid, gridPlay, height, weight);
+                                    writeGrid(gridPlay, height, weight);
+                                    System.out.print(" \n\n");
+                                    System.out.print("Do you want to keep playing? Please, Mark Y if you wanna Keep or N if you don't: \n");
+                                    action = enterStringUno.nextLine();
+                                    if (action.equals("N")) {
                                         System.exit(0);
-                                    } 
-                                } 
-                            }else{
-                                System.out.print(action+" ENTRO CUANDO NO ES UNA MINA FILA" + row+" columna"+column+ " \n");
-                                gridPlay = openSquare(gridPlay, grid, row, column, height, weight);
-                                System.out.print(" \n\n");
-                                writeGrid(gridPlay, height, weight);
-                            } 
+                                    } else {
+                                        if (action.equals("Y")) {
+                                            finish = false;
+                                            System.out.print(" \n\n");
+                                        } else {
+                                            System.out.print(" You didn't mark a right answer, remember they are CAPITAL Letters - Y or N- for that the game is close. \n\n");
+                                            System.exit(0);
+                                        }
+                                    }
+                                } else {
+                                    //The second case is when not open a mine
+                                    gridPlay = openSquare(gridPlay, grid, row, column, height, weight);
+                                    writeGrid(gridPlay, height, weight);
+                                    System.out.print(" \n\n");
+                                    if (completeGrid(grid, gridPlay, height, weight)) {
+                                        System.out.print("###YOU WIN###");
+                                        System.out.print("Do you want to keep playing? Please, Mark Y if you wanna Keep or N if you don't: \n");
+                                        action = enterStringDos.nextLine();
+                                        if (action.equals("N")) {
+                                            System.exit(0);
+                                        } else {
+                                            if (action.equals("Y")) {
+                                                finish = false;
+                                                System.out.print(" \n\n");
+                                            } else {
+                                                System.out.print(" You didn't mark a right answer, remember they are CAPITAL Letters - Y or N- for that the game is close. \n\n");
+                                                System.exit(0);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                //In this case is when user wants to put a flag on the square
+                                if (action.equals("P")) {
+                                    gridPlay[row][column] = "P";
+                                    writeGrid(gridPlay, height, weight);
+                                    System.out.print(" \n\n");
+                                    if (completeGrid(grid, gridPlay, height, weight)) {
+                                        System.out.print("###YOU WIN###");
+                                        System.out.print("Do you want to keep playing? Please, Mark Y if you wanna Keep or N if you don't: \n");
+                                        action = enterStringDos.nextLine();
+                                        if (action.equals("N")) {
+                                            System.exit(0);
+                                        } else {
+                                            if (action.equals("Y")) {
+                                                finish = false;
+                                                System.out.print(" \n\n");
+                                            } else {
+                                                System.out.print(" You didn't mark a right answer, remember they are CAPITAL Letters - Y or N- for that the game is close. \n\n");
+                                                System.exit(0);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    System.out.print("You didn't mark a right answer, remember they are CAPITAL Letters - U or P- \n\n");
+                                }
+                            }
                         }else{
-                            if(action.equals("P")) { 
-                            gridPlay[row][column]="P";
-                            writeGrid(gridPlay, height, weight);
-                            System.out.print(" \n\n");
-                            //Verificar si el juego está completo o no, si está completo desplegar matriz y cambiar finish a false, sino seguir.
-                            }else {
-                               System.out.print(" You didn't mark a right answer, remember they are CAPITAL Letters - U or P- \n\n"); 
-                            } 
-                        } 
+                            System.out.print("You marked this square already, please choose another one. \n\n");
+                        }
                     }else{
                         System.out.print("Remember the numbers of row and column should be less than height and weight respectively. Please enter the information again.  \n\n");
                     } 
                 } 
             }else{
-                System.out.print("The number of mine exceed the 60% of the grid size, please enter again the dates. \n\n");
+                System.out.print("The number of mines exceed the 60% of the grid size, please enter again the dates. \n\n");
             }
         } 
         
@@ -153,7 +191,7 @@ public class Minesweeper {
         }
     }
     
-    //Method when user choose U and it isn't a mine -- FALTA
+    //This is a recursive method who count the mines and put - where there isn't mines around.
     private static String [][] openSquare(String matrizPlay[][], String matriz[][], int r, int c, int h, int w){
         int mina = 0;
      
@@ -161,7 +199,6 @@ public class Minesweeper {
         if (r-1 >= 0){  
             if(openMine(matriz,r-1,c)){
                 mina++;
-                 System.out.print(mina+" \n");
             } 
         }
         
@@ -169,7 +206,6 @@ public class Minesweeper {
         if (c+1 < w){
             if(openMine(matriz,r,c+1)){
                 mina++;
-                System.out.print(mina+" \n");
             } 
         }
         
@@ -177,7 +213,6 @@ public class Minesweeper {
         if (r+1 < h){
             if(openMine(matriz,r+1,c)){
                 mina++;
-                System.out.print(mina+" \n");
             } 
         }
         
@@ -185,7 +220,6 @@ public class Minesweeper {
         if (c-1 >= 0){
             if(openMine(matriz,r,c-1)){
                 mina++;
-                System.out.print(mina+" \n");
             } 
         }
         
@@ -193,7 +227,6 @@ public class Minesweeper {
         if (r-1 >= 0 && c+1 < w){
             if(openMine(matriz,r-1,c+1)){
                 mina++;
-                System.out.print(mina+" \n");
             } 
         }
         
@@ -201,7 +234,6 @@ public class Minesweeper {
         if (r+1 < h && c+1 < w){
             if(openMine(matriz,r+1,c+1)){
                 mina++;
-                System.out.print(mina+" \n");
             } 
         }
         
@@ -209,7 +241,6 @@ public class Minesweeper {
         if (r-1 >= 0 && c-1 >= 0){
             if(openMine(matriz,r-1,c-1)){
                 mina++;
-                System.out.print(mina+" \n");
             } 
         }
         
@@ -217,13 +248,11 @@ public class Minesweeper {
         if (r+1 < h && c-1 >= 0){
             if(openMine(matriz,r+1,c-1)){
                 mina++;
-                System.out.print(mina+" \n");
             } 
         }
         
         if(mina!=0){
             matrizPlay[r][c]=String.valueOf(mina);
-            System.out.print("Entro para salir porque tiene :"+mina+" minas \n");
         }else{
             matrizPlay[r][c]="-";
             //OutofBounds
@@ -289,4 +318,35 @@ public class Minesweeper {
         }
         return matrizPlay;
     }
+    
+    //Method that answer true if the grid is complete or when the user won
+    private static boolean completeGrid(String matriz[][], String matrizPlay[][], int h, int w){
+       for (int i=0; i<h; i++){
+             for (int j=0; j<w; j++){
+                if((matrizPlay[i][j].equals("."))&&(matriz[i][j].equals("*"))){
+                    System.out.print("Es punto en la matriz Play y es * en la original - si se puede\n");
+                    return false;
+                } 
+                if((matrizPlay[i][j].equals("."))&&(matriz[i][j].equals("."))){
+                     System.out.print("Es punto en las dos marices por lo tanto - SI SE PUEDE \n");
+                    return false;
+                }
+                if((matrizPlay[i][j].equals("P"))&&(matriz[i][j].equals("."))){
+                    System.out.print("ESTA MARCADA COMO P, PERO NO ES MINA - SI SE PUEDE \n");
+                    return false;
+                }
+            }
+        }
+        System.out.print("NO SE PUEDE YA GANO \n");
+        return true;
+    } 
+    
+    //This method said if a position that user chose is marked already
+     private static boolean isNotMark(String matriz[][], int r, int c){
+        if(matriz[r][c].equals(".")||matriz[r][c].equals("P")){
+            return true;
+        }else{
+            return false;
+        } 
+    } 
 }
