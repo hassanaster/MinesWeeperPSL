@@ -13,3 +13,4 @@ f. There are 2 times program receive information from the user, to be able to st
   f.1. First, the height and weight of grid and the numbers of mines.
   f.2. Scond, the number of row, the number of column and action U "Uncover" the position, "P" to write P or flag in the position.
 g. f.2. Repeat until the game finish for some reason: WIN, LOST or the reasons wrote in the item e.
+h. I added the framework JUnit to test every method I made in the Mineweeper class.
