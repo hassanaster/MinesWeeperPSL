@@ -190,7 +190,7 @@ public class Minesweeper {
     }
     
     //Method that make a random grid with the details that user sent, receive 3 ints, h = height, w = weight, m = number of mines; and return the initial grid
-    private static String [][] fillGrid(int h, int w, int m){
+    public static String [][] fillGrid(int h, int w, int m){
         String grid [][] = new String [h][w];  
         int j;
         int k;
@@ -207,7 +207,7 @@ public class Minesweeper {
     }
     
     //Method that fills with . the grid in empty position, receive the main grid, the height and weight
-    private static void pointGrid(String matriz[][], int h, int w){
+    public static void pointGrid(String matriz[][], int h, int w){
         for (int i=0; i<h; i++){
            
            for (int j=0; j<w; j++){
@@ -219,7 +219,7 @@ public class Minesweeper {
     }
     
     //Method that write the grid in the console view
-    private static void writeGrid(String matriz[][], int h, int w){
+    public static void writeGrid(String matriz[][], int h, int w){
         for (int i=0; i<h; i++){
            
            for (int j=0; j<w; j++){
@@ -230,7 +230,7 @@ public class Minesweeper {
     }
     
     //This is a recursive method who count the mines and put - where there isn't mines around.
-    private static String [][] openSquare(String matrizPlay[][], String matriz[][], int r, int c, int h, int w){
+    public static String [][] openSquare(String matrizPlay[][], String matriz[][], int r, int c, int h, int w){
         int mina = 0;
      
         //Verified if the square is up it has a mine
@@ -337,7 +337,7 @@ public class Minesweeper {
     }
     
     //This method tells if the square that user opened is a mine or no
-    private static boolean openMine(String matriz[][], int r, int c){
+    public static boolean openMine(String matriz[][], int r, int c){
         if(matriz[r][c].equals("*")){
             return true;
         }else{
@@ -346,7 +346,7 @@ public class Minesweeper {
     } 
     
     //Result grid, join both grids, the play grid with the mine grid when the game is finished
-    private static String [][] resultGrid(String matrizMine [][], String matrizPlay [][],  int h, int w){ 
+    public static String [][] resultGrid(String matrizMine [][], String matrizPlay [][],  int h, int w){ 
         for (int i=0; i<h; i++){
              for (int j=0; j<w; j++){
                 if(matrizPlay[i][j].equals(".")&&matrizMine[i][j].equals("*")){
@@ -358,7 +358,7 @@ public class Minesweeper {
     }
     
     //Method that answer true if the grid is complete or when the user won
-    private static boolean completeGrid(String matriz[][], String matrizPlay[][], int h, int w){
+    public static boolean completeGrid(String matriz[][], String matrizPlay[][], int h, int w){
        for (int i=0; i<h; i++){
              for (int j=0; j<w; j++){
                 if((matrizPlay[i][j].equals("."))&&(matriz[i][j].equals("*"))){
@@ -376,7 +376,7 @@ public class Minesweeper {
     } 
     
     //This method said if a position that user chose is marked already
-     private static boolean isNotMark(String matriz[][], int r, int c){
+     public static boolean isNotMark(String matriz[][], int r, int c){
         if(matriz[r][c].equals(".")||matriz[r][c].equals("P")){
             return true;
         }else{
